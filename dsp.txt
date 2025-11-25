@@ -42,6 +42,57 @@ y= 4 11 20 30 20 11 4
 
 
 
+
+
+% Program for linear convolution without using conv()
+
+% to get the input sequence
+n1 = input('enter the length of input sequence: ');
+n2 = input('enter the length of impulse sequence: ');
+x = input('enter the input sequence: ');
+h = input('enter the impulse sequence: ');
+
+% length of output sequence
+N = n1 + n2 - 1;
+
+% initialize output with zeros
+y = zeros(1, N);
+
+% convolution using for loops
+for i = 1:n1
+    for j = 1:n2
+        y(i + j - 1) = y(i + j - 1) + x(i) * h(j);
+    end
+end
+
+% plotting
+subplot(3,1,1);
+stem(x);
+ylabel('amplitude');
+xlabel('n1 ->');
+title('input sequence');
+
+subplot(3,1,2);
+stem(h);
+ylabel('amplitude');
+xlabel('n2 ->');
+title('impulse signal');
+
+subplot(3,1,3);
+stem(y);
+ylabel('amplitude');
+xlabel('n3 ->');
+title('resultant signal');
+
+disp('the resultant signal is:');
+y
+
+
+
+
+
+
+
 %%Program for circular convolution 
 clc; 
 clear all; 
@@ -175,6 +226,85 @@ title('auto correlation of input sequence');
 INPUT: 
 enter input sequence [1 2 5 7] 
 enter the impulse sequence [2 6 0 5 3] 
+
+
+
+clc;
+close all;
+clear all;
+
+% input sequences
+x = input('enter input sequence: ');
+h = input('enter the impulse sequence: ');
+
+subplot(2,2,1);
+stem(x);
+xlabel('n');
+ylabel('x(n)');
+title('input sequence');
+
+subplot(2,2,2);
+stem(h);
+xlabel('n');
+ylabel('h(n)');
+title('impulse sequence');
+
+%% Cross-correlation using loops (no xcorr)
+lx = length(x);
+lh = length(h);
+N = lx + lh - 1;
+
+% reverse h
+h_rev = fliplr(h);
+
+% initialize y
+y = zeros(1, N);
+
+% cross-correlation formula
+for n = 1:N
+    sum_val = 0;
+    for k = 1:lx
+        j = n - k + 1;
+        if j > 0 && j <= lh
+            sum_val = sum_val + x(k) * h_rev(j);
+        end
+    end
+    y(n) = sum_val;
+end
+
+subplot(2,2,3);
+stem(y);
+xlabel('n');
+ylabel('y(n)');
+title('cross correlation between two sequences');
+
+
+%% Auto-correlation of x (again no xcorr)
+
+% reverse x
+x_rev = fliplr(x);
+
+% auto-correlation length
+N2 = 2*lx - 1;
+
+z = zeros(1, N2);
+
+for n = 1:N2
+    sum_val = 0;
+    for k = 1:lx
+        j = n - k + 1;
+        if j > 0 && j <= lx
+            sum_val = sum_val + x(k) * x_rev(j);
+        end
+    end
+    z(n) = sum_val;
+end
+
+subplot(2,2,4);
+stem(z);
+xlabel('n');
+ylabel('z(n)');
+title('auto correlation of input sequence');
 
 
 
